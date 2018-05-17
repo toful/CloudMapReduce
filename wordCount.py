@@ -1,8 +1,8 @@
 import boto3
 
 def lambda_handler(event, context):
-    s3 = boto3.client('s3', aws_access_key_id='AKIAJOMQJL3QTFKQ33WQ', aws_secret_access_key='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')
-    s3.download_file('mapreducesd', 'input', '/tmp/input.txt')
+    s3 = boto3.client('s3', aws_access_key_id='', aws_secret_access_key='')
+    s3.download_file('distributedsystemsurv', 'input/input', '/tmp/input.txt')
     text = open('/tmp/input.txt', 'r').read()
     result = {}
     
@@ -17,7 +17,7 @@ def lambda_handler(event, context):
     with open('/tmp/output.csv', 'w') as f:
         for key, value in result.items():
             f.write('%s:%s\n' % (key, value))
-    s3.upload_file('/tmp/output.csv', 'mapreducesd', 'output')
+    s3.upload_file('/tmp/output.csv', 'distributedsystemsurv', 'mapper_output/output2')
     
-    return 0
+    return "done"
     

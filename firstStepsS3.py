@@ -34,3 +34,7 @@ s3.upload_file(filename, bucket_name, filename)
 
 #downloading it
 s3.download_file(bucket_name, filename, '/tmp/'+filename)
+
+
+upload_file('/tmp/' + filename, '<bucket-name>', 'folder/{}'.format(filename))
+
