@@ -24,7 +24,8 @@ def lambda_handler(event, context):
             dict = {}
             for line in text.split('\n'):
                 values = line.split(':')
-                dict[values[0]] = values[1:len(values)]
+                if values[0] != '':
+                    dict[values[0]] = int(values[1:len(values)[0]])
             mappers_output.append(dict)
 
     #Reduce function:
