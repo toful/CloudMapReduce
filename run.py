@@ -1,22 +1,64 @@
 import boto3
+import json
+import os
+import time
 
-s3 = boto3.client('s3')
-lambda_client = boto3.client('lambda_client')
+# Creating json data with arguments
+payload = {
+  "filename": "pg10.txt",
+  "nummappers": "10",
+  "function": "CW"
+}
+payload = json.dumps(payload)
 
-s3.upload_file('input.txt', 'distributedsystemsurv', 'input/input')
+# Create clients
+s3_client = boto3.client('s3')
+lambda_client = boto3.client('lambda')
 
-lambda_client.invoke(
-     FunctionName='WordCountMap',
-     InvocationType='Event',
-     Payload=''
+try:
+  s3_client.delete_object(
+    Bucket='mapreducesd',
+    Key='Output_Files/out.txt')
+except botocore.exceptions.ClientError: 
+  print 'Output folder clean.'
+
+# invoke split function
+response = lambda_client.invoke(
+    FunctionName='Split',
+    InvocationType='Event',
+    LogType='Tail',
+    Payload=payload
 )
 
-s3.download_file('distributedsystemsurv', 'mapper_output/output', 'output.txt')
+# Get working directory
+wd = os.path.dirname(os.path.realpath(__file__))
 
-'''import boto3
+os.system('rm '+wd+'/Out.txt')
 
-iam_client = boto3.client('iam')
-lambda_client = boto3.client('lambda')
+# download file
+time.sleep(10)
+response = s3_client.download_file(
+  'mapreducesd', 
+  'Output_Files/out.txt', 
+  wd+'/Out.txt')
+
+print open( wd+'/Out.txt', 'r').read()
+
+'''
+   response = client.invoke(
+        FunctionName='my_lambda_function',
+        #InvocationType='RequestResponse',
+        InvocationType='Event',
+        LogType='Tail',
+        Payload=payload,
+
+aws lambda invoke \
+--invocation-type Event \
+--function-name CreateThumbnail \
+--region region \
+--payload file://file-path/inputfile.txt \
+--profile adminuser \
+outputfile.txt
 
 env_variables = dict() # Environment Variables
 

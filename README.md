@@ -21,8 +21,12 @@ To create the same architecture as us you need to follow the next steps:
 6. Give permissions to your lambda function(s) to use s3 and receive events notification from it (if you use event for synchronization).
 7. Give permissions to your lambda function(s) to use CloudWatch and be monitored by it. This is very useful since some of our lambdas are not being executed directly, so we will probably need this service if we want to debug or get the output from a lambda execution triggered by an event.
 8. Upload your input file(s) into s3.
-9. Configure aws in your local machine. (optional, just for invoking remote lambdas from the tty of your computer) 
-10. Create your master program to execute your desired lambda function. If you used events, probably you just need to invoke the "primary" lambda function and the events will be in charge of invoking the necessary lambdas for the completion of MapReduce process.
+9. Install boto3 in your machine:
+```
+pip install boto3
+```
+10. Configure aws in your local machine. (optional, just for invoking remote lambdas from the tty of your computer) 
+11. Create your master program that imports boto3 and execute your desired lambda function. If you used events, probably you just need to invoke the "primary" lambda function and the events will be in charge of invoking the necessary lambdas for the completion of MapReduce process.
 
 ## Working with api boto3
 To manage all operation with the services of AWS in python we use the boto3 library. 
@@ -86,8 +90,10 @@ Note: Step 6 and 7 could have been implemented using as event the creation of ev
 We used this tutorials:
 
 [Working with S3](https://docs.aws.amazon.com/lambda/latest/dg/with-s3-example.html)
+
 [Example of Map-Reduce using Lambda](https://github.com/awslabs/lambda-refarch-mapreduce)
 
+[Lambda Client in Python](http://blog.cesarcd.com/2017/07/sample-aws-lambda-client-written-in.html)
 ## Authors
 
 * **Aleix Mariné Tena** - [AleixMT](https://github.com/AleixMT)
