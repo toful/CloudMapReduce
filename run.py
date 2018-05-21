@@ -2,77 +2,75 @@ import boto3
 import json
 import os
 import time
+import sys
 
 # Creating json data with arguments
 payload = {
-  "filename": "pg10.txt",
-  "nummappers": "10",
-  "function": "CW"
+  "filename": sys.argv[1],
+  "nummappers": sys.argv[2],
+  "function": sys.argv[3]
 }
-payload = json.dumps(payload)
 
-# Create clients
-s3_client = boto3.client('s3')
-lambda_client = boto3.client('lambda')
+if __name__ == "__main__":
+  print payload
+  payload = json.dumps(payload)
+  # Create clients
+  s3_client = boto3.client('s3')
+  lambda_client = boto3.client('lambda')
 
-try:
-  s3_client.delete_object(
-    Bucket='mapreducesd',
-    Key='Output_Files/out.txt')
-except botocore.exceptions.ClientError: 
-  print 'Output folder clean.'
+  # Get working directory
+  wd = os.path.dirname(os.path.realpath(__file__))
 
-# invoke split function
-response = lambda_client.invoke(
-    FunctionName='Split',
-    InvocationType='Event',
-    LogType='Tail',
-    Payload=payload
-)
+  # Clean Output files in local machine
+  os.system('rm -f '+wd+'/Out.txt')
 
-# Get working directory
-wd = os.path.dirname(os.path.realpath(__file__))
+  # try to delete output object in server
+  try:
+    s3_client.delete_object(
+      Bucket='mapreducesd',
+      Key='Output_Files/out.txt')
+  except botocore.exceptions.ClientError: 
+    print 'Output folder clean.'
 
-os.system('rm '+wd+'/Out.txt')
+  # measure begin time
+  begin = time.time()
 
-# download file
-time.sleep(10)
-response = s3_client.download_file(
-  'mapreducesd', 
-  'Output_Files/out.txt', 
-  wd+'/Out.txt')
+  # invoke split function
+  response = lambda_client.invoke(
+      FunctionName='Split',
+      InvocationType='Event',
+      LogType='Tail',
+      Payload=payload
+  )
 
-print open( wd+'/Out.txt', 'r').read()
+  print response
 
-'''
-   response = client.invoke(
-        FunctionName='my_lambda_function',
-        #InvocationType='RequestResponse',
-        InvocationType='Event',
-        LogType='Tail',
-        Payload=payload,
+  # wait until file is available
+  numfiles = None
+  while numfiles is None:
+    numfiles = s3_client.list_objects(Bucket='mapreducesd', Prefix='Output_Files/out.txt').get('Contents')
+    print 'Result is not available yet'
 
-aws lambda invoke \
---invocation-type Event \
---function-name CreateThumbnail \
---region region \
---payload file://file-path/inputfile.txt \
---profile adminuser \
-outputfile.txt
+  print 'Result Found!'
 
-env_variables = dict() # Environment Variables
+  # download file
+  response = s3_client.download_file(
+    'mapreducesd', 
+    'Output_Files/out.txt', 
+    wd+'/Out.txt')
 
-with open('lambda.zip', 'rb') as f:
-  zipped_code = f.read()
+  # measure end time
+  end = time.time()
 
-role = iam_client.get_role(RoleName='LambdaBasicExecution')
+  # calcule RoundTrip_Time
+  RoundTrip_time = end - begin
 
-lambda_client.create_function(
-  FunctionName='myLambdaFunction',
-  Runtime='python2.7',
-  Role=role['Role']['Arn'],
-  Handler='main.handler',
-  Code=dict(ZipFile=zipped_code),
-  Timeout=300, # Maximum allowable timeout
-  Environment=dict(Variables=env_variables),
-)'''
+  # Show results file
+  print open( wd+'/Out.txt', 'r').read()
+
+  # show transcurred time
+  print 'MapReduce RoundTrip_time is '+str(RoundTrip_time)+' segons'
+
+  # Salvem resultats de l'execucio
+  os.system('echo \"'+sys.argv[1]+';'+ sys.argv[2]+';'+ sys.argv[3]+';'+str(RoundTrip_time)+'\" >> result.csv')
+
