@@ -8,7 +8,7 @@ import botocore
 
 def lambda_handler(event, context):
     # Obtenim host de s3
-    s3_client = boto3.client('s3', aws_access_key_id='AKIAJOMQJL3QTFKQ33WQ', aws_secret_access_key='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')
+    s3_client = boto3.client('s3', aws_access_key_id='', aws_secret_access_key='')
 
     # Guardem nom en una variable
     REMOTE_PATH = event.get("Records")[0].get("s3").get("object").get("key")

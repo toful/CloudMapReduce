@@ -15,7 +15,7 @@ do
 		for j in $nummappers;
 		do
 			echo $i $j $k
-			python run.py $i $j $k
+			python master.py $i $j $k
 		done
 	done
 done

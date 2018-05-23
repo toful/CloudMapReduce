@@ -11,7 +11,7 @@ import codecs
 
 def lambda_handler(event, context):
     # Obtenim host client
-    s3_client = boto3.client('s3', aws_access_key_id='AKIAJOMQJL3QTFKQ33WQ', aws_secret_access_key='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')
+    s3_client = boto3.client('s3', aws_access_key_id='', aws_secret_access_key='')
 
     # Download the file from S3
     s3_client.download_file('mapreducesd', 'Input_Files/'+event.get("filename"), '/tmp/input.txt')

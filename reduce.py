@@ -9,7 +9,7 @@ lambda_handler({
 def lambda_handler(event, context):
     
     # Obtain host
-    s3 = boto3.client('s3', aws_access_key_id='AKIAJOMQJL3QTFKQ33WQ', aws_secret_access_key='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')
+    s3 = boto3.client('s3', aws_access_key_id='', aws_secret_access_key='')
     
     # Data output structure
     mappers_output = []

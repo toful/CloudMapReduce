@@ -30,7 +30,7 @@ if __name__ == "__main__":
   # --> If not exists, abort
   if sys.argv[1] not in filenames:
     print 'Input file is not in the Input folder! Aborting...'
-    sys.exit(1)
+    exit()
 
   # Get working directory
   wd = os.path.dirname(os.path.realpath(__file__))
