@@ -97,4 +97,4 @@ We used this tutorials:
 ## Authors
 
 * **Aleix Mariné Tena** - [AleixMT](https://github.com/AleixMT)
-* **Cristòfol Daudén Esmel** - [toful](https://github.com/toful
+* **Cristòfol Daudén Esmel** - [toful](https://github.com/toful)

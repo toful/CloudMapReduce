@@ -1,5 +1,0 @@
-{
-  "filename": "pg10.txt",
-  "nummappers": "30",
-  "function": "WC"
-}
